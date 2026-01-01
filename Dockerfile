@@ -1,26 +1,23 @@
-# Use an official Node.js runtime as the base image
-FROM node:22-alpine
+# Gunakan Node.js 24 (official image)
+FROM node:24-alpine
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package.json & package-lock.json dulu (biar cache optimal)
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --force
+RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy seluruh source code
 COPY . .
 
-RUN npm ci
+# Build Next.js (untuk production)
+RUN npm run build
 
-# Build the Next.js application
-RUN npm run build          # creates .next
-
-# Expose the port Next.js listens on
+# Expose port Next.js
 EXPOSE 3000
 
-# Command to start the Next.js server
-#CMD npm start
-CMD ["npm", "start"]
+# Jalankan Next.js
+CMD ["npm", "run", "start"]
